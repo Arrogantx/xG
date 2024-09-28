@@ -1,4 +1,4 @@
-generator client {
+   generator client {
      provider = "prisma-client-js"
    }
 
@@ -8,11 +8,38 @@ generator client {
    }
 
    model User {
+     id            String    @id @default(cuid())
+     email         String    @unique
+     name          String?
+     password      String?
+     twitterId     String?   @unique
+     twitterToken  String?
+     twitterSecret String?
+     createdAt     DateTime  @default(now())
+     updatedAt     DateTime  @updatedAt
+     campaigns     Campaign[]
+     subscriptions SubscriptionPlan[]
+   }
+
+   model Campaign {
+     id           String   @id @default(cuid())
+     userId       String
+     user         User     @relation(fields: [userId], references: [id])
+     tweetText    String
+     scheduleTime DateTime
+     status       String
+     createdAt    DateTime @default(now())
+     updatedAt    DateTime @updatedAt
+   }
+
+   model SubscriptionPlan {
      id        String   @id @default(cuid())
-     email     String   @unique
-     name      String?
-     password  String
+     userId    String
+     user      User     @relation(fields: [userId], references: [id])
+     planType  String
+     startDate DateTime
+     endDate   DateTime?
+     status    String
      createdAt DateTime @default(now())
      updatedAt DateTime @updatedAt
    }
-   
